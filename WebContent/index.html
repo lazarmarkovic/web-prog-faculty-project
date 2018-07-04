@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Vanred - Dashboard</title>
+
+     <!-- Bootstrap core CSS and jquery -->
+     <link rel="stylesheet" href="css/lib/bootstrap.min.css">
+     <script src="js/lib/jquery-3.3.1.min.js"></script>
+     <script src="js/lib/popper.min.js"></script>
+     <script src="js/lib/bootstrap.min.js"></script>
+
+    <!-- Custom styles for this template -->
+    <link href="css/dashboard.css" rel="stylesheet">
+    <link href="css/post.css" rel="stylesheet">
+
+    <!-- Custom JS code -->
+    <script src="js/globals.js"></script>
+    <script src="js/dashboard-gui.js"></script>
+    <script src="js/dashboard-user.js"></script>
+    <script src="js/dashboard-search.js"></script>
+    <script src="js/dashboard-newVS.js"></script>
+    <script src="js/dashboard-viewVS.js"></script>
+    <script src="js/dashboard-korisnici.js"></script>
+    <script src="js/dashboard-viewTer.js"></script>
+    <script src="js/dashboard-newTer.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">VanRed</a>
+      <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search" id="search">
+      <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+          <a class="nav-link" href="#" id="signout">Sign out</a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#" id="vSituacijem">
+                  <span data-feather="alert-triangle"></span>
+                  Vanredne situacije
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="novaSituacijam">
+                  <span data-feather="alert-triangle"></span>
+                  Nova vanredna situacija
+                </a>
+              </li>
+              <li class="nav-item admin-option">
+                <a class="nav-link" href="#" id="korisnicim">
+                  <span data-feather="users"></span>
+                  Korisnici
+                </a>
+              </li>
+              <li class="nav-item admin-option">
+                <a class="nav-link" href="#" id="teritorijem">
+                  <span data-feather="map-pin"></span>
+                  Teritorije
+                </a>
+              </li>
+              <li class="nav-item admin-option">
+                <a class="nav-link" href="#" id="dodajTeritorijum">
+                  <span data-feather="map-pin"></span>
+                  Dodaj teritoriju
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#" id="podesavanjam">
+                  <span data-feather="settings"></span>
+                  Podesavanja profila
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id="vSituacije">
+        <h1 class="blocked-user-text">Vas nalog je blokiran</h1>
+        <div class="row">
+          <form id="filterform" class="form-signin col-md-6" method="get" target="">
+            <div class="form-group w-100">
+              <label for="filter">Izaberite filter:</label>
+              <select name="filter" class="form-control" id="filter">
+                <option value="0">Sortiranje po datumu</option>
+                <option value="1">Filtriranje po odabranoj hitnosti</option>
+                <option value="2">Filtriranje po odabranoj teritoriji</option>
+                <option value="3">Nijedan</option>
+              </select>
+            </div>
+            <div class="form-group w-100">
+              <label for="hitnost">Izaberite hitnost:</label>
+              <select name="hitnost" class="col-md-4 form-control" id="hitnost">
+                <option value="1">Crveno</option>
+                <option value="2">Naradzasto</option>
+                <option value="3">Plavo</option>
+              </select>
+            </div>
+            <div class="form-group w-100">
+              <label for="ter">Izaberite teritoriju:</label>
+              <select name="teritorija" class="col-md-4 form-control" id="ter"></select>
+            </div>
+            <div class="form-group w-100">
+              <label for="ter">Izaberite pretragu:</label>
+              <select name="pretraga" class="col-md-4 form-control" id="pretraga">
+                <option value="0">Po nazivu teritorije</option>
+                <option value="1">Po nazivu opstine</option>
+                <option value="2">Po opisu</option>
+                <option value="3">Po korisnickom imenu volontera</option>
+                <option value="4">Po neobradjenim vanrednim situacijama</option>
+              </select>
+            </div>
+            <div class="user-option">
+                <div class="form-group">
+                  <input type="checkbox" id="showMyVS" class="form-control"> VS za koje sam postavljen
+                </div>
+            </div>
+
+            <div class="form-group w-100">
+              <input class="btn btn-lg btn-primary btn-block form-control" type="submit" value="Pretraga" id="filterSearch">
+            </div>
+          </form>
+
+          <div class="table-responsive">
+            <table class="table table-striped table-sm" id="dataTable"></table>
+          </div>
+        </div>
+      </div>
+
+      <div role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id="novaSituacija">
+        <div class="row">
+          <form id="createVSform" class="form-signin col-md-8" method="get" target="">
+            
+            <input type="text" id="nazivMesta1" class="form-control" placeholder="Naziv mesta" required autofocus>
+            <input type="text" id="opstina1" class="form-control" placeholder="Opstina" required>
+            <textarea rows="4" cols="50" id="opis1" class="form-control"  placeholder="Opis" required></textarea>
+            <label>Postavite lokaciju vanredne situacije:</label>
+            <div id="map"></div>
+
+            <br>Izaberite teritoriju:
+            <select name="teritorija" id="ter1">
+              <option value="-1">None</option>
+            </select>
+
+            <br>Izaberite hitnost:
+            <select name="hitnost" class="col-md-4 m-1" id="hitnost1">
+              <option value="CRVENO">Crveno</option>
+              <option value="NARANDZASTO">Naradzasto</option>
+              <option value="PLAVO">Plavo</option>
+            </select>
+            <br>Izaberite sliku:
+            <input type="file" id="pathSlike" class="form-control" placeholder="Slika" accept="image/jpeg" required>
+            
+            <div class="admin-option">
+              <br>Izaberite volontera:
+              <select name="volonter" class="col-md-4 m-1" id="volonter1">
+              </select>
+            </div>
+
+            <input class="btn btn-lg btn-primary btn-block m-1" type="submit" value="Kreiraj">
+          </form>
+        </div>
+      </div>
+
+      <div role="main" class="col-md-4 ml-sm-auto col-lg-10 pt-3 px-4" id="prikazSituacije">
+        <div class="row">
+          <label><b>Naziv mesta: </b></label><label id="nazivMesta2"></label>
+        </div>
+        <div class="row">
+          <label><b>Opstina: </b></label><label id="opstina2"></label>
+        </div>
+        <div class="row">
+            <label><b>Opis: </b></label>
+        </div>
+        <div class="row">
+          <textarea rows="4" cols="50" id="opis2" class="form-control"  placeholder="Opis" readonly></textarea>
+        </div>
+        <div class="row">
+            <label><b>Tacna lokacija: </b></label>
+        </div>
+        <div id="map2"></div>
+        <div class="row">
+          <label><b>Teritorija: </b></label><label id="teritorija2"></label>
+        </div>
+        <div class="row">
+          <label><b>Hitnost: </b></label><label id="hitnost2"></label>
+        </div>
+        <div class="row">
+          <label><b>Slika: </b></label><img id="slika2" src="" height="350" width="800">
+        </div>
+        <div class="row">
+          <label><b>Volonter: </b></label><label id="volonter2"></label>
+        </div>
+        <div class="row">
+            <label><b>Postavite volontera: </b></label>
+        </div>
+        <div class="row admin-option">
+          <select name="volonter" class="col-md-4 m-1" id="volonter2-new">
+          </select>
+        </div>
+        <div class="row mb-3 admin-option">
+          <button id="updateVolonterInVS" type="button" class="btn btn-primary m-2">Sacuvaj volotnera</button>
+          <button id="archiveVS" type="button" class="btn btn-primary m-2">Arhiviraj</button>
+        </div>
+        <div class="row" id="comment-post">
+            <textarea rows="4" cols="50" id="novi-komentar" class="form-control m-2"  placeholder="Ostavite komentar"></textarea>
+            <button id="placeCommentInVS" type="button" class="btn btn-primary m-2">Posalji</button>
+        </div>
+
+        <div class="row mt-4" id="comment-container">
+        </div>
+
+      </div>
+
+
+      <div role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4" id="korisnici">
+        <div class="row">
+          <div class="table-responsive">
+            <table class="table table-striped table-sm" id="korisniciTable"></table>
+          </div>
+        </div>
+      </div>
+
+      <div class="row ml-sm-auto col-lg-10 pt-3 px-4" id="teritorije">
+        <div class="col-md-4">
+          <h6>Lista teritorija</h6>
+          <div class="row">
+            <div class="table-responsive">
+              <table class="table table-striped table-sm" id="teritorijeTable"></table>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 ml-5">
+          <h6>Editor odabrane teritorije</h6>
+          <div class="row">
+            <form id="updateTerform" class="form-signin col-md-8" method="get" target="">
+              <div class="row">
+                <label><b>Naziv: </b></label>
+                <input type="text" id="naziv12" class="form-control" placeholder="Naziv" required autofocus>
+              </div>
+              <div class="row">
+                  <label><b>Povrsina: </b></label>
+                <input type="text" id="povrsina12" class="form-control" placeholder="Povrsina" required>
+              </div>
+              <div class="row">
+                  <label><b>Broj stanovnika: </b></label>
+                <input type="text" id="brojStanovnika12" class="form-control" placeholder="Broj stanovnika" required>
+              </div>
+              <input type="text" id="terId12" class="form-control d-none">
+              <input class="btn btn-lg btn-primary btn-block m-1" type="submit" value="Azuriraj">
+              <button id="deleteTer" type="button" class="btn btn-primary m-2">Izbrisi</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row ml-sm-auto col-lg-10 pt-3 px-4" id="dodajTeritoriju">
+        <div class="col-md-6 ml-5">
+          <div class="row">
+            <form id="createTerform" class="form-signin col-md-8" method="get" target="">
+              <div class="row">
+                <label><b>Naziv: </b></label>
+                <input type="text" id="naziv121" class="form-control" placeholder="Naziv" required autofocus>
+              </div>
+              <div class="row">
+                  <label><b>Povrsina: </b></label>
+                <input type="text" id="povrsina121" class="form-control" placeholder="Povrsina" required>
+              </div>
+              <div class="row">
+                  <label><b>Broj stanovnika: </b></label>
+                <input type="text" id="brojStanovnika121" class="form-control" placeholder="Broj stanovnika" required>
+              </div>
+              <input class="btn btn-lg btn-primary btn-block m-1" type="submit" value="Kreiraj">
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row ml-sm-auto col-lg-10 pt-3 px-4" id="podesavanja">
+          <div class="col-md-5 ml-5">
+            <div class="row">
+              <form id="updateUserForm" class="form-signin" method="get" target="">
+                <div class="row">
+                  <label><b>Korisnicko ime: </b></label>
+                  <input type="text" id="inputUsername13" class="form-control" placeholder="Korisničko ime" required autofocus>
+                </div>
+                <div class="row">
+                  <label><b>Password: </b></label>
+                  <input type="password" id="inputPassword13" class="form-control" placeholder="Lozinka" required>
+                </div>
+                <div class="row">
+                  <label><b>Ime: </b></label>
+                  <input type="text" id="ime13" class="form-control" placeholder="Ime" required autofocus>
+                </div>
+                <div class="row">
+                  <label><b>Prezime: </b></label>
+                  <input type="text" id="prezime13" class="form-control" placeholder="Przime" required>
+                </div>
+                <div class="row">
+                  <label><b>Telefon: </b></label>
+                  <input type="text" id="telefon13" class="form-control" placeholder="Telefon" required>
+                </div>
+                <div class="row mb-2">
+                  <label><b>Email: </b></label>
+                  <input type="email" id="email13" class="form-control" placeholder="Email" required>
+                </div>
+                <div class="row mb-2 user-option">
+                  <label><b>Teritorija: </b></label>
+                  <select name="teritorija" id="ter13">
+                  </select>
+                </div>
+                <div class="row mb-2">
+                  <input class="btn btn-lg btn-primary btn-block" type="submit" value="Azuriraj podatke">
+                </div>
+              </form>
+            </div>
+          </div>
+
+
+          <div class="col-md-5 ml-5">
+            <div class="row mb-2">
+              <img id="avatarSlika13" src="" height="140" width="140" class="mb-3">
+            </div>
+            <div class="row mb-2">
+              <input type="file" id="pathSlike13" class="form-control" placeholder="Slika" accept="image/jpeg" required>
+            </div>
+            <div class="row mb-2">
+              <button id="updateAvatarSlika13" type="button" class="btn btn-primary m-2">Azuriraj sliku</button>
+            </div>
+          </div>
+        </div>
+      
+
+
+    </div>
+
+
+    <!-- Icons -->
+    <script src="js/lib/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+  </body>
+</html>

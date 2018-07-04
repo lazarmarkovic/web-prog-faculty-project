@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Vanred - Registracija</title>
+
+   <!-- Bootstrap core CSS and jquery -->
+   <link rel="stylesheet" href="css/lib/bootstrap.min.css">
+   <script src="js/lib/jquery-3.3.1.min.js"></script>
+   <script src="js/lib/popper.min.js"></script>
+   <script src="js/lib/bootstrap.min.js"></script>
+
+
+    <!-- Custom styles for this template -->
+    <link href="css/register.css" rel="stylesheet">
+
+
+    <!-- Custom JS code -->
+    <script src="js/register.js"></script>
+  </head>
+
+  <body class="text-center">
+    <form id="registerform" class="form-signin" method="get" target="">
+      <img class="mb-4" src="img/logo.svg" alt="" width="72" height="72">
+      <h1 class="h3 mb-3 font-weight-normal">Molimo, registrujte se</h1>
+     
+      <input type="text" id="inputUsername" class="form-control" placeholder="Korisničko ime" required autofocus>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Lozinka" required>
+      <input type="text" id="ime" class="form-control" placeholder="Ime" required autofocus>
+      <input type="text" id="prezime" class="form-control" placeholder="Przime" required>
+      <input type="text" id="telefon" class="form-control" placeholder="Telefon" required autofocus>
+      <input type="email" id="email" class="form-control" placeholder="Email" required>
+      <label>Teritorija: </label>
+      <select name="teritorija" id="ter">
+         
+      </select>
+      <input type="file" id="pathSlike" class="form-control" placeholder="file" accept="image/jpeg" required>
+
+      <div class="checkbox mb-3">
+      <a href="signin.html">Prijava</a>
+      </div>
+
+      <input class="btn btn-lg btn-primary btn-block" type="submit" value="Registracija">
+
+      <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+    </form>
+  </body>
+</html>
